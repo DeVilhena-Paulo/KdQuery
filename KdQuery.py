@@ -40,7 +40,7 @@ class Node:
     Attributes:
         point (:obj:`tuple` of float or int): Stores the position of the node.
         region (:obj:`list` of :obj:`list` of float or int): A list of size
-            k, where each list contais two numbers defining the limits of the
+            k, where each list contains two numbers defining the limits of the
             region in which the node is.
         active (bool): True by default. If it`s False, this node can`t be the
             output of a nearest_point query.
@@ -91,14 +91,23 @@ class Tree:
             in the list.
         k (int): The number of dimensions of the space.
         capacity (int): The maximum number of nodes in the tree.
+        limits (:obj:`list` of :obj:`list` of float or int, optional): A list
+            of size k, where each list contains two numbers defining the limits
+            of the region where all the nodes will be. If none is passed as
+            argument, the region will be all the space, that is, ]-inf, inf[
+            for each one of the k axis.
 
     """
 
-    def __init__(self, k, capacity):
+    def __init__(self, k, capacity, limits=None):
         self.node_list = [None] * capacity
         self.size = 0
         self.next_identifier = 0
         self.k = k
+
+        # The region of the space where all the points are
+        self.region = limits if limits is not None \
+            else [[-math.inf, math.inf]] * k
 
     def __len__(self):
         return self.size
@@ -132,7 +141,7 @@ class Tree:
         Args:
             point (:obj:`tuple` of float or int): Stores the position of the
                 node.
-            data (:obj): The information stored by the node.
+            data (:obj, optional): The information stored by the node.
 
         Returns:
             int: The identifier of the new node.
@@ -148,9 +157,10 @@ class Tree:
         assert len(point) == self.k
 
         if self.size == 0:
-            region = [[-math.inf, math.inf]] * self.k
+            if self.region is None:
+                self.region = [[-math.inf, math.inf]] * self.k
             axis = 0
-            return self.new_node(point, region, axis, data)
+            return self.new_node(point, self.region, axis, data)
 
         # Iteratively descends to one leaf
         parent_node = self.node_list[0]
@@ -203,7 +213,8 @@ class Tree:
         Args:
             query (:obj:`tuple` of float or int): Stores the position of the
                 node.
-            dist_fun (:obj:`function`): The distance function.
+            dist_fun (:obj:`function`, optional): The distance function,
+                euclidean distance by default.
 
         Returns:
             :obj:`tuple`: Tuple of length 3, where the first element is the
@@ -245,7 +256,8 @@ class Tree:
                 axis, left child identifier, right child identifier and
                 if it is active. If the implemetation does not uses
                 the active attribute the function should return always True.
-            dist_fun (:obj:`function`): The distance function.
+            dist_fun (:obj:`function`, optional): The distance function,
+                euclidean distance by default.
 
         Returns:
             :obj:`tuple`: Tuple of length 3, where the first element is the
