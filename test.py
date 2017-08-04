@@ -1,13 +1,13 @@
 import numpy.random as npr
 import unittest
 
-from KdQuery import KdTree
+from KdQuery import Tree
 
 
 class TestKdtree(unittest.TestCase):
 
     def test_kdtree_consistency(self):
-        tree = KdTree(k, capacity)
+        tree = Tree(k, capacity)
 
         points = (npr.rand(capacity, k) - 0.5) * size
         for point in points:
@@ -28,7 +28,7 @@ class TestKdtree(unittest.TestCase):
                 self.assertGreaterEqual(right_child[axis], point[axis])
 
     def test_find_nearest_point(self):
-        tree = KdTree(k, capacity)
+        tree = Tree(k, capacity)
         points = (npr.rand(capacity, k) - 0.5) * size
         for point in points:
             tree.insert(point)
@@ -47,6 +47,6 @@ class TestKdtree(unittest.TestCase):
 
 if __name__ == '__main__':
     size = 1000
-    capacity = 4000
+    capacity = 3000
     k = 4
     unittest.main()

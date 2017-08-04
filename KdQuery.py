@@ -138,7 +138,7 @@ class Tree:
             int: The identifier of the new node.
 
         Example:
-            >>> tree = KdTree(4, 800)
+            >>> tree = Tree(4, 800)
             >>> point = (3, 7)
             >>> data = dict('name': Fresnel, 'label': blue, 'speed': 98.2)
             >>>
@@ -212,7 +212,7 @@ class Tree:
                 that were computed during the search.
 
         Example:
-            >>> tree = KdTree(2, 3)
+            >>> tree = Tree(2, 3)
             >>> tree.insert((0, 0)); tree.insert((3, 5)); tree.insert((-1, 7));
             >>>
             >>> query = (-1, 8)
@@ -224,7 +224,7 @@ class Tree:
         def get_properties(node_id):
             return self.get_node(node_id).get_properties()
 
-        return KdTree.nearest_point(query, 0, get_properties, dist_fun)
+        return Tree.nearest_point(query, 0, get_properties, dist_fun)
 
     @staticmethod
     def nearest_point(query, root_id, get_properties, dist_fun=euclidean_dist):
