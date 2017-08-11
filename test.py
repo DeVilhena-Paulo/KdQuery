@@ -1,7 +1,7 @@
 import numpy.random as npr
 import unittest
 
-from KdQuery import Tree
+from kdquery import Tree
 
 
 class TestKdtree(unittest.TestCase):
