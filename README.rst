@@ -2,7 +2,7 @@
 KdQuery
 =======
 
-KdQuery is a python package that defines one possible implementation of kd-trees using list to avoid recursion, but most importantly it defines a general method to find the nearest node for any kd-tree implementation.
+KdQuery is a package that defines one possible implementation of kd-trees using python lists to avoid recursion and most importantly it defines a general method to find the nearest node for any kd-tree implementation.
 
 Getting Started
 ===============
@@ -69,7 +69,7 @@ The Tree class with the optional arguments
 The nearest_point method
 ------------------------
 
-Let's say that in your application you have some positions over the superface of the Earth and that to store this data you implement a kd-tree where each node is stored as an element of an array with these specifications:
+Let's say that you work with some positions over the superface of the Earth in your application and that to store this data you implement a kd-tree where each node is represented as an element of an array with these specifications:
 
 .. code-block:: python
 
@@ -87,7 +87,7 @@ Let's say that in your application you have some positions over the superface of
        ('right', 'int32')
     ])
 
-If you need to find the node in this kd-tree implementation that is nearest to a given point for the spherical distance, you can use the nearest_point method from this package by simply definig a method that receives the index of a node in this representation and returns the coordinates of the node, the region where it is, the index for the left child and the index for the right child. For this implementation it could be something like:
+If you need to find the node in this kd-tree implementation that is nearest to a given point for the spherical distance, you can use the nearest_point method from this package by simply definig a method that receives the index of a node in this representation and returns the coordinates of the node, the region where it is, the indices to left and right child. For the implementation mentioned above, it could be something like:
 
 .. code-block:: python
 
@@ -97,12 +97,24 @@ If you need to find the node in this kd-tree implementation that is nearest to a
         horizontal_limits = [node['limit_left'], node['limit_right']]
         vertical_limits = [node['limit_bottom'], node['limit_top']]
 
+        # The region of the space definied by the node
         region = [horizontal_limits, vertical_limits]
+
+        # The position of the point in the space
         coordinates = (node['longitude']), node['latitude']))
+
+        # The dimension divided by this node
+        # 0 for longitude and 1 for latitude in this case
         dimension = node['dimension']
+
+        # If you want this node to be considered
+        # Set to true if this feature is not predicted by your implementation
+        active = True
+
+        # Indices to left and right children
         left, right = node['left'], node['right']
 
-        return coordinates, region, dimension, True, left, right
+        return coordinates, region, dimension, active, left, right
 
 To call the method:
 
@@ -119,4 +131,3 @@ To call the method:
     root_id = 0  # index of the root
     node_id, dist = kdquery.nearest_point(query, root_id, get_properties,
                                           spherical_dist)
-
