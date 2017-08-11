@@ -7,7 +7,6 @@ general method to find the nearest node for any kd-tree implementation.
 
 """
 import math
-
 from collections import deque
 
 
@@ -15,12 +14,6 @@ def interval_condition(value, inf, sup, dist):
     """Checks if value belongs to the interval [inf - dist, sup + dist].
     """
     return (value > inf - dist and value < sup + dist)
-
-
-def spherical_dist(point1, point2):
-    theta = point1[0] - point2[0]
-    phi = point1[1] - point2[1]
-    return math.acos(math.cos(theta) * math.cos(phi))
 
 
 def euclidean_dist(point1, point2):
@@ -243,93 +236,93 @@ class Tree:
         def get_properties(node_id):
             return self.get_node(node_id).get_properties()
 
-        return self.nearest_point(query, 0, get_properties, dist_fun)
+        return nearest_point(query, 0, get_properties, dist_fun)
 
-    @staticmethod
-    def nearest_point(query, root_id, get_properties, dist_fun=euclidean_dist):
-        """Find the point in the tree that minimizes the distance to the query.
 
-        This method implements the nearest_point query for any structure
-        implementing a kd-tree. The only requirement is a function capable to
-        extract the relevant properties from a node represantation of the
-        particular implemetation.
+def nearest_point(query, root_id, get_properties, dist_fun=euclidean_dist):
+    """Find the point in the tree that minimizes the distance to the query.
 
-        Args:
-            query (:obj:`tuple` of float or int): Stores the position of the
-                node.
-            root_id (:obj): The identifier of the root in the kd-tree
-                implementation.
-            get_properties (:obj:`function`): The function to extract the
-                relevant properties from a node, namely its point, region,
-                axis, left child identifier, right child identifier and
-                if it is active. If the implemetation does not uses
-                the active attribute the function should return always True.
-            dist_fun (:obj:`function`, optional): The distance function,
-                euclidean distance by default.
+    This method implements the nearest_point query for any structure
+    implementing a kd-tree. The only requirement is a function capable to
+    extract the relevant properties from a node represantation of the
+    particular implemetation.
 
-        Returns:
-            :obj:`tuple`: Tuple of length 3, where the first element is the
-                identifier of the nearest node, the second is the distance
-                to the query and the third is the number of distance operations
-                that were computed during the search.
+    Args:
+        query (:obj:`tuple` of float or int): Stores the position of the
+            node.
+        root_id (:obj): The identifier of the root in the kd-tree
+            implementation.
+        get_properties (:obj:`function`): The function to extract the
+            relevant properties from a node, namely its point, region,
+            axis, left child identifier, right child identifier and
+            if it is active. If the implemetation does not uses
+            the active attribute the function should return always True.
+        dist_fun (:obj:`function`, optional): The distance function,
+            euclidean distance by default.
 
-        """
+    Returns:
+        :obj:`tuple`: Tuple of length 3, where the first element is the
+            identifier of the nearest node, the second is the distance
+            to the query and the third is the number of distance operations
+            that were computed during the search.
 
-        k = len(query)
-        dist = math.inf
+    """
 
-        nearest_node_id = None
+    k = len(query)
+    dist = math.inf
 
-        # stack_node: stack of identifiers to nodes within a region that
-        # contains the query.
-        # stack_look: stack of identifiers to nodes within a region that
-        # does not contains the query.
-        stack_node = deque([root_id])
-        stack_look = deque()
+    nearest_node_id = None
 
-        count = 0
-        while stack_node or stack_look:
+    # stack_node: stack of identifiers to nodes within a region that
+    # contains the query.
+    # stack_look: stack of identifiers to nodes within a region that
+    # does not contains the query.
+    stack_node = deque([root_id])
+    stack_look = deque()
 
-            if stack_node:
-                node_id = stack_node.pop()
-                look_node = False
-            else:
-                node_id = stack_look.pop()
-                look_node = True
+    count = 0
+    while stack_node or stack_look:
 
-            point, region, axis, active, left, right = get_properties(node_id)
+        if stack_node:
+            node_id = stack_node.pop()
+            look_node = False
+        else:
+            node_id = stack_look.pop()
+            look_node = True
 
-            # Should consider this node?
-            # As it is within a region that does not contains the query, maybe
-            # there is no chance to find a closer node in this region
-            if look_node:
-                inside_region = True
-                for i in range(k):
-                    inside_region &= interval_condition(query[i], region[i][0],
-                                                        region[i][1], dist)
-                if not inside_region:
-                    continue
+        point, region, axis, active, left, right = get_properties(node_id)
 
-            # Update the distance only if the node is active.
-            if active:
-                node_distance = dist_fun(query, point)
-                if nearest_node_id is None or dist > node_distance:
-                    nearest_node_id = node_id
-                    dist = node_distance
+        # Should consider this node?
+        # As it is within a region that does not contains the query, maybe
+        # there is no chance to find a closer node in this region
+        if look_node:
+            inside_region = True
+            for i in range(k):
+                inside_region &= interval_condition(query[i], region[i][0],
+                                                    region[i][1], dist)
+            if not inside_region:
+                continue
 
-            if query[axis] < point[axis]:
-                side_node = left
-                side_look = right
-            else:
-                side_node = right
-                side_look = left
+        # Update the distance only if the node is active.
+        if active:
+            node_distance = dist_fun(query, point)
+            if nearest_node_id is None or dist > node_distance:
+                nearest_node_id = node_id
+                dist = node_distance
 
-            if side_node is not None:
-                stack_node.append(side_node)
+        if query[axis] < point[axis]:
+            side_node = left
+            side_look = right
+        else:
+            side_node = right
+            side_look = left
 
-            if side_look is not None:
-                stack_look.append(side_look)
+        if side_node is not None:
+            stack_node.append(side_node)
 
-            count += 1
+        if side_look is not None:
+            stack_look.append(side_look)
 
-        return nearest_node_id, dist, count
+        count += 1
+
+    return nearest_node_id, dist, count
