@@ -23,7 +23,8 @@ The package can easily be installed via pip::
 Usage
 =====
 
-The Tree class with the default settings:
+The Tree class with the default settings
+----------------------------------------
 
 .. code-block:: python
 
@@ -33,42 +34,40 @@ The Tree class with the default settings:
     tree = Tree()
 
     # Insert points with some attached data (or not)
-    # The method returns the identifier of the internal
-    # representation of the node.
-    node_id = tree.insert((0, 3), 'Important data')
     tree.insert((9, 1), {'description': 'point in the plane', 'label': 6})
     tree.insert((1, -8))
     tree.insert((-3, 3), data=None)
     tree.insert((0.2, 3.89), ["blue", "yellow", "python"])
 
     # Recover the data attached to (0, 3)
-    # The get_node mehtod returns an object
+    node_id = tree.insert((0, 3), 'Important data')
     node = tree.get_node(node_id)
-    print(node.data)  # prints: 'Important data'
+    print(node.data)  # 'Important data'
 
     # Find the node in the tree that is nearest to a given point
     query = (7.2, 1.2)
     node_id, dist = tree.find_nearest_point(query)
     print(dist)  # 1.8110770276274832
 
-The Tree class with the optional arguments:
+The Tree class with the optional arguments
+------------------------------------------
 
 .. code-block:: python
 
     from kdquery import Tree
 
-    # Create a 3d-tree with capacity of 3000000 nodes and delimited by a well
-    # definied region
     x_limits = [-100, 100]
     y_limits = [-10000, 250]
     z_limits = [-1500, 10]
-
     region = [x_limits, y_limits, z_limits]
+
     capacity = 3000000
 
+    # 3d-tree with capacity of 3000000 nodes
     tree = Tree(3, capacity, region)
 
-The nearest_point method:
+The nearest_point method
+------------------------
 
 Let's say that in your application you have some positions over the
 superface of the Earth and that you implement a kd-tree where each
@@ -123,7 +122,7 @@ To call the method:
         return math.acos(math.cos(theta) * math.cos(phi))
 
     query = (2.21, 48.65)
-    root_id  # index of the root
+    root_id = 0  # index of the root
     node_id, dist = kdquery.nearest_point(query, root_id, get_properties,
                                           spherical_dist)
 
