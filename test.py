@@ -41,7 +41,7 @@ class TestKdtree(unittest.TestCase):
 
             for epsilon in perturbation:
                 query = point + epsilon
-                ind, dist, cnt = tree.find_nearest_point(query)
+                ind, dist = tree.find_nearest_point(query)
                 self.assertEqual(list(tree.node_list[ind].point), list(point))
 
 
