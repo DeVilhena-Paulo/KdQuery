@@ -217,10 +217,9 @@ class Tree:
                 euclidean distance by default.
 
         Returns:
-            :obj:`tuple`: Tuple of length 3, where the first element is the
+            :obj:`tuple`: Tuple of length 2, where the first element is the
                 identifier of the nearest node, the second is the distance
-                to the query and the third is the number of distance operations
-                that were computed during the search.
+                to the query.
 
         Example:
             >>> tree = Tree(2, 3)
@@ -228,7 +227,7 @@ class Tree:
             >>> tree.insert((3, 5))
             >>> tree.insert((-1, 7))
             >>> query = (-1, 8)
-            >>> nearest_node_id, dist, count = tree.find_nearest_point(query)
+            >>> nearest_node_id, dist = tree.find_nearest_point(query)
             >>> dist
             1
 
@@ -261,10 +260,9 @@ def nearest_point(query, root_id, get_properties, dist_fun=euclidean_dist):
             euclidean distance by default.
 
     Returns:
-        :obj:`tuple`: Tuple of length 3, where the first element is the
+        :obj:`tuple`: Tuple of length 2, where the first element is the
             identifier of the nearest node, the second is the distance
-            to the query and the third is the number of distance operations
-            that were computed during the search.
+            to the query.
 
     """
 
@@ -280,7 +278,6 @@ def nearest_point(query, root_id, get_properties, dist_fun=euclidean_dist):
     stack_node = deque([root_id])
     stack_look = deque()
 
-    count = 0
     while stack_node or stack_look:
 
         if stack_node:
@@ -323,6 +320,4 @@ def nearest_point(query, root_id, get_properties, dist_fun=euclidean_dist):
         if side_look is not None:
             stack_look.append(side_look)
 
-        count += 1
-
-    return nearest_node_id, dist, count
+    return nearest_node_id, dist
