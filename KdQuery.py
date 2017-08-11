@@ -2,9 +2,8 @@
 
 """Kd-tree implementation.
 
-This module contains one possible kd-tree structure implementation and a
-general method capable to find the nearest node from a query for any kd-tree
-structure.
+This module defines one possible kd-tree structure implementation and a
+general method to find the nearest node for any kd-tree implementation.
 
 """
 import math
@@ -56,8 +55,9 @@ class Node:
     Example:
         >>> point = (0, 4.2, 3)
         >>> region = [[-3, 1], [4, 4.5], [2, 7 ]]
-        >>> data = dict('name': 'my_node', label': green, 'weight': 893.3)
-        >>> node = Node(point, region, 1, data)
+        >>> data = {'name': 'my_node', label': green, 'weight': 893.3}
+        >>> axis = 1
+        >>> node = Node(point, region, axis, data)
 
     """
 
@@ -84,22 +84,30 @@ class Tree:
     This class defines one implemention of a kd-tree using a python list to
     save the methods from recursion.
 
+    Args:
+        k (int, optional): The number of dimensions of the space.
+        capacity (int, optional): The maximum number of nodes in the tree.
+        limits (:obj:`list` of :obj:`list` of float or int, optional): A list
+            of size k, where each list contains two numbers defining the limits
+            of the region which all the nodes will be. If none is passed as
+            argument, the region will be all the space, that is, ]-inf, inf[
+            for each one of the k axis.
+
     Attributes:
         node_list (:obj:`list` of :obj:Node): The list of nodes.
         size (int): The number of active nodes in the list.
         next_identifier (int): The identifier of the next node to be inserted
             in the list.
         k (int): The number of dimensions of the space.
-        capacity (int): The maximum number of nodes in the tree.
-        limits (:obj:`list` of :obj:`list` of float or int, optional): A list
+        region (:obj:`list` of :obj:`list` of float or int, optional): A list
             of size k, where each list contains two numbers defining the limits
-            of the region where all the nodes will be. If none is passed as
+            of the region which all the nodes belong to. If none is passed as
             argument, the region will be all the space, that is, ]-inf, inf[
             for each one of the k axis.
 
     """
 
-    def __init__(self, k, capacity, limits=None):
+    def __init__(self, k=2, capacity=10000, limits=None):
         self.node_list = [None] * capacity
         self.size = 0
         self.next_identifier = 0
@@ -149,8 +157,7 @@ class Tree:
         Example:
             >>> tree = Tree(4, 800)
             >>> point = (3, 7)
-            >>> data = dict('name': Fresnel, 'label': blue, 'speed': 98.2)
-            >>>
+            >>> data = {'name': Fresnel, 'label': blue, 'speed': 98.2}
             >>> node_id = tree.insert(point, data)
 
         """
@@ -224,8 +231,9 @@ class Tree:
 
         Example:
             >>> tree = Tree(2, 3)
-            >>> tree.insert((0, 0)); tree.insert((3, 5)); tree.insert((-1, 7));
-            >>>
+            >>> tree.insert((0, 0))
+            >>> tree.insert((3, 5))
+            >>> tree.insert((-1, 7))
             >>> query = (-1, 8)
             >>> nearest_node_id, dist, count = tree.find_nearest_point(query)
             >>> dist
@@ -235,7 +243,7 @@ class Tree:
         def get_properties(node_id):
             return self.get_node(node_id).get_properties()
 
-        return Tree.nearest_point(query, 0, get_properties, dist_fun)
+        return self.nearest_point(query, 0, get_properties, dist_fun)
 
     @staticmethod
     def nearest_point(query, root_id, get_properties, dist_fun=euclidean_dist):
