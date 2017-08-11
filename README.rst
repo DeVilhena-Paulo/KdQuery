@@ -69,11 +69,11 @@ The Tree class with the optional arguments
 The nearest_point method
 ------------------------
 
-Let's say that in your application you have some positions over the
-superface of the Earth and that you implement a kd-tree where each
-node is stored as an element of a array with these specifications:
+Let's say that in your application you have some positions over the superface of the Earth and that to store this data you implement a kd-tree where each node is stored as an element of an array with these specifications:
 
 .. code-block:: python
+
+    import numpy as np
 
     node_dtype = np.dtype([
        ('longitude', 'float64'),
@@ -87,18 +87,12 @@ node is stored as an element of a array with these specifications:
        ('right', 'int32')
     ])
 
-If you need to find the node in this kd-tree implementation that is
-nearest to a given point for the spherical distance, you can use
-the nearest_point method from this package by simply definig a method
-that receives the index of a node in this representation and returns
-the coordinates of the node, the region where it is, the index for
-the left child and the index for the right child. For this implementation
-it could be something like:
+If you need to find the node in this kd-tree implementation that is nearest to a given point for the spherical distance, you can use the nearest_point method from this package by simply definig a method that receives the index of a node in this representation and returns the coordinates of the node, the region where it is, the index for the left child and the index for the right child. For this implementation it could be something like:
 
 .. code-block:: python
 
     def get_properties(node_id):
-        node = data['kdtree'][node_id]
+        node = tree[node_id]
 
         horizontal_limits = [node['limit_left'], node['limit_right']]
         vertical_limits = [node['limit_bottom'], node['limit_top']]
