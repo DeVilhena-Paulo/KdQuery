@@ -18,7 +18,7 @@ Installing
 
 The package can easily be installed via pip::
 
-  pip install KdQuery
+  pip install kdquery
 
 Usage
 =====
@@ -70,29 +70,33 @@ The Tree class with the optional arguments:
 
 The nearest_point method:
 
-    # Let's say that in your application you have some positions over the
-    # superface of the Earth and that you implement a kd-tree where each
-    # node is stored as an element of a array with these specifications:
-    #
-    # node_dtype = np.dtype([
-    #    ('longitude', 'float64'),
-    #    ('latitude', 'float64'),
-    #    ('limit_left', 'float64'),
-    #    ('limit_right', 'float64'),
-    #    ('limit_bottom', 'float64'),
-    #    ('limit_top', 'float64'),
-    #    ('dimension', 'float64'),
-    #    ('left', 'int32'),
-    #    ('right', 'int32')
-    # ])
-    #
-    # If you need to find the node in this kd-tree implementation that is
-    # nearest to a given point for the spherical distance, you can use
-    # the nearest_point method from this package by simply definig a method
-    # that receives the index of a node in this representation and returns
-    # the coordinates of the node, the region where it is, the index for
-    # the left child and the index for the right child. For this implementation
-    # it could be something like:
+Let's say that in your application you have some positions over the
+superface of the Earth and that you implement a kd-tree where each
+node is stored as an element of a array with these specifications:
+
+.. code-block:: python
+
+    node_dtype = np.dtype([
+       ('longitude', 'float64'),
+       ('latitude', 'float64'),
+       ('limit_left', 'float64'),
+       ('limit_right', 'float64'),
+       ('limit_bottom', 'float64'),
+       ('limit_top', 'float64'),
+       ('dimension', 'float64'),
+       ('left', 'int32'),
+       ('right', 'int32')
+    ])
+
+If you need to find the node in this kd-tree implementation that is
+nearest to a given point for the spherical distance, you can use
+the nearest_point method from this package by simply definig a method
+that receives the index of a node in this representation and returns
+the coordinates of the node, the region where it is, the index for
+the left child and the index for the right child. For this implementation
+it could be something like:
+
+.. code-block:: python
 
     def get_properties(node_id):
         node = data['kdtree'][node_id]
@@ -107,7 +111,10 @@ The nearest_point method:
 
         return coordinates, region, dimension, True, left, right
 
-    # The syntax:
+To call the method:
+
+.. code-block:: python
+
     import kdquery
 
     def spherical_dist(point1, point2):
