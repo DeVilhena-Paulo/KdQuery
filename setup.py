@@ -10,7 +10,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name='KdQuery',
 
-    version='0.1.0',
+    version='0.1.2',
 
     description='Nearest point query for any kd-tree implementation',
     long_description=long_description,
@@ -23,7 +23,7 @@ setup(
     author_email='pevilhena2@gmail.com',
 
     # Choose your license
-    license='APv2',
+    license='Apache Software License',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
@@ -49,7 +49,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='kdtree',
+    keywords='kd-tree query',
 
-    py_modules=["KdQuery"],
+    py_modules=["kdquery"],
 )
