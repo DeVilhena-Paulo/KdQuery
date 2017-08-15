@@ -87,7 +87,7 @@ Let's say that you work with some positions over the superface of the Earth in y
        ('right', 'int32')
     ])
 
-If you need to find the node in this kd-tree implementation that is nearest to a given point for the spherical distance, you can use the nearest_point method from this package by simply definig a method that receives the index of a node in this representation and returns the coordinates of the node, the region where it is, the indices to left and right child. For the implementation mentioned above, it could be something like:
+If given a point over the surface of the Earth you need to find the nearest position of your database, you can use the nearest_point method from this package. You only need to define a method that receives the index of a node in this representation and returns the coordinates of the node, the region where it is and the indices to the left and right child. For the implementation mentioned above, it could be something like:
 
 .. code-block:: python
 
@@ -103,7 +103,7 @@ If you need to find the node in this kd-tree implementation that is nearest to a
         # The position of the point in the space
         coordinates = (node['longitude']), node['latitude']))
 
-        # The dimension divided by this node
+        # The dimension of the space divided by this node
         # 0 for longitude and 1 for latitude in this case
         dimension = node['dimension']
 
@@ -123,9 +123,12 @@ To call the method:
     import kdquery
 
     def spherical_dist(point1, point2):
-        theta = point1[0] - point2[0]
-        phi = point1[1] - point2[1]
-        return math.acos(math.cos(theta) * math.cos(phi))
+        <statement-1>
+        .
+        .
+        .
+        <statement-N>
+        return dist
 
     query = (2.21, 48.65)
     root_id = 0  # index of the root
