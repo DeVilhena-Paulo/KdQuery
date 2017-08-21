@@ -63,7 +63,7 @@ class Node:
         self.right = None
         self.data = data
 
-    def desactivate(self):
+    def deactivate(self):
         self.active = False
 
     def get_properties(self):
@@ -119,8 +119,8 @@ class Tree:
     def get_node(self, node_id):
         return self.node_list[node_id]
 
-    def disactivate(self, node_id):
-        """Disactivate the node identified by node_id.
+    def deactivate(self, node_id):
+        """Deactivate the node identified by node_id.
 
         Disactivates the node corresponding to node_id, which means that
         it can never be the output of a nearest_point query.
