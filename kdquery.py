@@ -133,7 +133,7 @@ class Tree:
                 its insertion).
 
         """
-        self.get_node(node_id).desactivate()
+        self.get_node(node_id).deactivate()
         self.size -= 1
 
     def insert(self, point, data=None):
