@@ -10,7 +10,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name='KdQuery',
 
-    version='0.1.3',
+    version='0.2.0',
 
     description='Nearest point query for any kd-tree implementation',
     long_description=long_description,
