@@ -1,5 +1,4 @@
 from setuptools import setup
-from codecs import open
 from os import path
 
 here = path.abspath(path.dirname(__file__))
@@ -10,7 +9,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name='KdQuery',
 
-    version='0.2.0',
+    version='0.2.1',
 
     description='Nearest point query for any kd-tree implementation',
     long_description=long_description,
