@@ -7,7 +7,7 @@ general method to find the nearest node for any kd-tree implementation.
 
 """
 import math
-from collections import deque
+from collections import deque, namedtuple
 
 
 def interval_condition(value, inf, sup, dist):
@@ -21,54 +21,15 @@ def euclidean_dist(point1, point2):
                           for i in range(len(point1))]))
 
 
-class Node:
-    """Internal representation of a node.
+Node = namedtuple('Node', 'point region axis active left right data')
+"""Internal representation of a node.
 
-    The tree is represented by a list of node. Each node is associated to a
-    point in the k-dimensional space, is inside a region, devises this region
-    in two parts according to an axis, has two child nodes and stores some
-    data.
+The tree is represented by a list of node. Each node is associated to a
+point in the k-dimensional space, is inside a region, devises this region
+in two parts according to an axis, has two child nodes and stores some
+data.
 
-    Attributes:
-        point (:obj:`tuple` of float or int): Stores the position of the node.
-        region (:obj:`list` of :obj:`list` of float or int): A list of size
-            k, where each list contains two numbers defining the limits of the
-            region in which the node is.
-        active (bool): True by default. If it`s False, this node can`t be the
-            output of a nearest_point query.
-        axis (int): Represents one particular dimension of the space.
-            Relatively to this dimension, all the nodes to the left are smaller
-            and all the nodes to the right are greater.
-        left (int): Identifier of the left child in the internal representation
-            of a kd-tree.
-        right (int): Identifier of the right child in the internal
-            representation of a kd-tree.
-        data (:obj): The information stored by the node.
-
-    Example:
-        >>> point = (0, 4.2, 3)
-        >>> region = [[-3, 1], [4, 4.5], [2, 7 ]]
-        >>> data = {'name': 'my_node', label': green, 'weight': 893.3}
-        >>> axis = 1
-        >>> node = Node(point, region, axis, data)
-
-    """
-
-    def __init__(self, point, region, axis, data):
-        self.point = point
-        self.region = region
-        self.axis = axis
-        self.active = True
-        self.left = None
-        self.right = None
-        self.data = data
-
-    def deactivate(self):
-        self.active = False
-
-    def get_properties(self):
-        return (self.point, self.region, self.axis, self.active,
-                self.left, self.right)
+"""
 
 
 class Tree:
@@ -114,7 +75,7 @@ class Tree:
         return self.size
 
     def __iter__(self):
-        return (self.get_node(node_id) for node_id in range(self.size))
+        return (self.node_list[i] for i in range(self.size))
 
     def get_node(self, node_id):
         return self.node_list[node_id]
@@ -133,8 +94,8 @@ class Tree:
                 its insertion).
 
         """
-        self.get_node(node_id).deactivate()
-        self.size -= 1
+        node = self.node_list[node_id]
+        self.node_list[node_id] = node._replace(active=False)
 
     def insert(self, point, data=None):
         """Insert a new node in the tree.
@@ -163,40 +124,39 @@ class Tree:
             return self.new_node(point, self.region, axis, data)
 
         # Iteratively descends to one leaf
-        parent_node = self.node_list[0]
+        current_id = 0
         while True:
+            parent_node = self.node_list[current_id]
             axis = parent_node.axis
             if point[axis] < parent_node.point[axis]:
-                child = parent_node.left
-                left = True
+                next_id, left = parent_node.left, True
             else:
-                child = parent_node.right
-                left = False
+                next_id, left = parent_node.right, False
 
-            if child is None:
+            if next_id is None:
                 break
 
-            parent_node = self.node_list[child]
+            current_id = next_id
 
         # Get the region delimited by the parent node
         region = parent_node.region[:]
         region[axis] = parent_node.region[axis][:]
 
         # Limit to the child's region
-        new_limit = parent_node.point[axis]
+        limit = parent_node.point[axis]
 
         # Update reference to the new node
         if left:
-            parent_node.left = self.size
-            region[axis][1] = new_limit
+            self.node_list[current_id] = parent_node._replace(left=self.size)
+            region[axis][1] = limit
         else:
-            parent_node.right = self.size
-            region[axis][0] = new_limit
+            self.node_list[current_id] = parent_node._replace(right=self.size)
+            region[axis][0] = limit
 
         return self.new_node(point, region, (axis + 1) % self.k, data)
 
     def new_node(self, point, region, axis, data):
-        node = Node(point, region, axis, data)
+        node = Node(point, region, axis, True, None, None, data)
 
         # Identifier to new node
         node_id = self.next_identifier
@@ -233,7 +193,7 @@ class Tree:
 
         """
         def get_properties(node_id):
-            return self.get_node(node_id).get_properties()
+            return self.node_list[node_id][:6]
 
         return nearest_point(query, 0, get_properties, dist_fun)
 
