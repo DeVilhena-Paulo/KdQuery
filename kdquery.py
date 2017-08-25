@@ -22,10 +22,10 @@ def euclidean_dist(point1, point2):
 
 
 class Node:
-    """Internal represantation of a node.
+    """Internal representation of a node.
 
     The tree is represented by a list of node. Each node is associated to a
-    point in the k-dimensional space, is inside a region, devides this region
+    point in the k-dimensional space, is inside a region, devises this region
     in two parts according to an axis, has two child nodes and stores some
     data.
 
@@ -39,10 +39,10 @@ class Node:
         axis (int): Represents one particular dimension of the space.
             Relatively to this dimension, all the nodes to the left are smaller
             and all the nodes to the right are greater.
-        left (int): Identifier of the left child in the internal represenation
+        left (int): Identifier of the left child in the internal representation
             of a kd-tree.
         right (int): Identifier of the right child in the internal
-            represenation of a kd-tree.
+            representation of a kd-tree.
         data (:obj): The information stored by the node.
 
     Example:
@@ -74,7 +74,7 @@ class Node:
 class Tree:
     """Kd-tree implementation.
 
-    This class defines one implemention of a kd-tree using a python list to
+    This class defines one implementation of a kd-tree using a python list to
     save the methods from recursion.
 
     Args:
@@ -122,14 +122,14 @@ class Tree:
     def deactivate(self, node_id):
         """Deactivate the node identified by node_id.
 
-        Disactivates the node corresponding to node_id, which means that
+        Deactivates the node corresponding to node_id, which means that
         it can never be the output of a nearest_point query.
 
         Note:
-            The node is not removed from the tree, its data is steel avaiable.
+            The node is not removed from the tree, its data is steel available.
 
         Args:
-            node_id (int): The node indentifier (given to the user after
+            node_id (int): The node identifier (given to the user after
                 its insertion).
 
         """
@@ -166,7 +166,7 @@ class Tree:
         parent_node = self.node_list[0]
         while True:
             axis = parent_node.axis
-            if point[axis % self.k] < parent_node.point[axis % self.k]:
+            if point[axis] < parent_node.point[axis]:
                 child = parent_node.left
                 left = True
             else:
@@ -182,7 +182,7 @@ class Tree:
         region = parent_node.region[:]
         region[axis] = parent_node.region[axis][:]
 
-        # Limit to the child`s region
+        # Limit to the child's region
         new_limit = parent_node.point[axis]
 
         # Update reference to the new node
@@ -243,8 +243,8 @@ def nearest_point(query, root_id, get_properties, dist_fun=euclidean_dist):
 
     This method implements the nearest_point query for any structure
     implementing a kd-tree. The only requirement is a function capable to
-    extract the relevant properties from a node represantation of the
-    particular implemetation.
+    extract the relevant properties from a node representation of the
+    particular implementation.
 
     Args:
         query (:obj:`tuple` of float or int): Stores the position of the
@@ -254,7 +254,7 @@ def nearest_point(query, root_id, get_properties, dist_fun=euclidean_dist):
         get_properties (:obj:`function`): The function to extract the
             relevant properties from a node, namely its point, region,
             axis, left child identifier, right child identifier and
-            if it is active. If the implemetation does not uses
+            if it is active. If the implementation does not uses
             the active attribute the function should return always True.
         dist_fun (:obj:`function`, optional): The distance function,
             euclidean distance by default.
